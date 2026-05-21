@@ -1,4 +1,4 @@
-name: Déploiement vers Vercel
+name: Déploiement vers Vercel après exécution des tests
 
 on:
   push:
@@ -6,7 +6,26 @@ on:
       - main
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
   deploy:
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
@@ -16,8 +35,8 @@ jobs:
       - name: Installation de Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
 
       - name: Installation des dépendances
         run: npm install
